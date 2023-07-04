@@ -1,6 +1,6 @@
 const Sequelize=require('sequelize')
 const sequelize=require('../util/database')
-
+const Message= require('./messages')
 const User=sequelize.define('users',{
     id:{
         type: Sequelize.INTEGER,
@@ -19,5 +19,5 @@ const User=sequelize.define('users',{
     type: Sequelize.STRING
   }
 });
-
+User.hasMany(Message, { foreignKey: 'userId' });
 module.exports = User;
