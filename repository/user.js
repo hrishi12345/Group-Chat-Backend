@@ -9,5 +9,15 @@ class userRepository{
             throw{error}
         }
     }
+    async getuser({email}){
+        try{
+            const response=await User.findOne({where:{email:email}})
+            
+            return response
+        }catch(error){
+            console.log('error while getting the data')
+            throw(error)
+        }
+    }
 }
 module.exports=userRepository

@@ -16,7 +16,17 @@ async function encryptPassword(password) {
     throw new Error('Error while hashing the password');
   }
 }
-
+async function decryptPassword(password, user) {
+    try {
+      const result = await bcrypt.compare(password, user);
+      console.log(user)
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Something went wrong');
+    }
+  }
+  
 const createUser = async (req, res) => {
   try {
     const { username, email, password, number } = req.body;
@@ -40,9 +50,37 @@ const createUser = async (req, res) => {
   } catch (error) {
     console.log('Error while getting the data');
     throw error;
-  }
-};
+  }}
+  const getUser = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      if (isString(password) || isString(email)) {
+        return res.status(400).json({ error: 'Bad parameters' });
+      }
+      const users = await userRepo.getuser({ email });
+      console.log(users.dataValues)
+      if (users.dataValues) {
+        console.log(users.dataValues.password)
+        const isPasswordCorrect = await decryptPassword(password, users.dataValues.password);
+        console.log(isPasswordCorrect)
+        if (isPasswordCorrect) {
+          res.status(201).json({ message: 'User login Successfully' });
+        } else {
+          res.status(401).json({ message: 'Password incorrect' });
+        }
+      } else {
+        res.status(403).json({ message: 'User Not Found' });
+      }
+    } catch (error) {
+      console.log('Error while sending data', error);
+      throw error;
+    }
+  };
+  
+  
+
 
 module.exports = {
   createUser,
+  getUser
 };
