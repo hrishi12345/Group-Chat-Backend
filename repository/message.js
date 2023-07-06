@@ -1,22 +1,22 @@
 const Message = require('../models/messages');
-const User = require('../models/user');
 
 class MessageRepository {
-  async addMessage({ message, userId }) {
+  static async addMessage({ message, userId }) {
     try {
-      const createdMessage = await Message.create({ content: message });
-      
-      // Associate the message with a user
-      if (userId) {
-        const user = await User.findByPk(userId);
-        if (user) {
-          await createdMessage.setUser(user);
-        }
-      }
-
+      const createdMessage = await Message.create({ userId: userId, content: message });
       return createdMessage;
     } catch (error) {
       console.log('Error while adding data to the database:', error);
+      throw error;
+    }
+  }
+
+  static async getMessages() {
+    try {
+      const allMessages = await Message.findAll(); // Retrieve all messages
+      return allMessages;
+    } catch (error) {
+      console.log('Error while retrieving messages:', error);
       throw error;
     }
   }

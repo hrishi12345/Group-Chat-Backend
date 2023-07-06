@@ -1,6 +1,7 @@
 const UserRepository = require('../repository/user');
 const userRepo = new UserRepository();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 
 function isString(string) {
   return typeof string === 'string' && string.trim().length === 0;
@@ -26,7 +27,11 @@ async function decryptPassword(password, user) {
       throw new Error('Something went wrong');
     }
   }
-  
+
+  const generateAccessToken = (id, name) => {
+    return jwt.sign({ userId : id, name: name} ,'secretkey');
+}
+
 const createUser = async (req, res) => {
   try {
     const { username, email, password, number } = req.body;
@@ -64,7 +69,7 @@ const createUser = async (req, res) => {
         const isPasswordCorrect = await decryptPassword(password, users.dataValues.password);
         console.log(isPasswordCorrect)
         if (isPasswordCorrect) {
-          res.status(201).json({ message: 'User login Successfully' });
+            return res.status(201).json({success: true, message: "User logged in successfully", token: generateAccessToken(users.dataValues.id, users.dataValues.username)})
         } else {
           res.status(401).json({ message: 'Password incorrect' });
         }
@@ -82,5 +87,6 @@ const createUser = async (req, res) => {
 
 module.exports = {
   createUser,
-  getUser
+  getUser,
+  generateAccessToken
 };

@@ -2,7 +2,7 @@ const express = require('express');
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 const cors = require('cors');
-
+const messageRoutes=require('./routes/message')
 const app = express();
 app.use(cors());
 
@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/user', userRoutes);
-
+app.use('/message',messageRoutes)
 // Synchronize Sequelize models with the database and start the server
 sequelize
   .sync()
