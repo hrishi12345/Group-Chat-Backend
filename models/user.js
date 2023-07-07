@@ -1,9 +1,12 @@
-const Sequelize=require('sequelize')
-const sequelize=require('../util/database')
-const Message= require('./messages')
-const User=sequelize.define('users',{
-    id:{
-        type: Sequelize.INTEGER,
+const Sequelize = require('sequelize');
+const sequelize = require('../util/database');
+const Message = require('./messages');
+const GroupMembership = require('./groupmembership');
+const Group = require('./groups');
+
+const User = sequelize.define('users', {
+  id: {
+    type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true
@@ -15,9 +18,9 @@ const User=sequelize.define('users',{
     unique: true
   },
   password: Sequelize.STRING,
-  phoneNumber: {
-    type: Sequelize.STRING
-  }
+  phoneNumber: Sequelize.STRING
 });
-User.hasMany(Message, { foreignKey: 'userId' });
+
+
+
 module.exports = User;
